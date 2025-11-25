@@ -1,0 +1,37 @@
+// lib/data/restaurant_data.dart
+
+import 'dart:convert';
+import 'package:somativa_apm/model/restaurant.dart'; // Import corrigido
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; 
+
+class RestaurantData extends ChangeNotifier{
+  // Cria uma lista para carregar os restaurantes
+  List<Restaurant> _listRestaurant=[];
+  List<Restaurant> get listRestaurant=> _listRestaurant;
+
+  Future<List<Restaurant>> getRestaurant()async{
+
+    if(_listRestaurant.isNotEmpty){
+      return _listRestaurant; // Evita recarregar se já tiver carregado uma vez
+    }
+
+    try{
+      // Carrega a string JSON do arquivo (deve existir em assets/data.json)
+      final String jsonString = await rootBundle.loadString('assets/data.json');
+      final Map<String,dynamic> data= json.decode(jsonString);
+      final List<dynamic> RestaurantData = data['restaurants'];
+
+      // Mapeia a lista JSON para objetos Restaurant
+      _listRestaurant.addAll(
+       RestaurantData.map((e)=>Restaurant.fromMap(e)).toList()
+
+      );
+      notifyListeners(); // notifica caso esteja utilizando provider
+    } catch(e){
+      debugPrint('Erro ao carregar restaurantes: $e');
+    }
+
+    return _listRestaurant;
+  }
+}
