@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:somativa_apm/model/dish.dart';
+import '../model/dish.dart';
 
 class BagProvider extends ChangeNotifier {
-  List<Dish> dishesOnBag = [];
+  final List<Dish> _bag = [];
 
-  addAllDishes(List<Dish> dishes) {
-    dishesOnBag.addAll(dishes);
+  List<Dish> get dishes => _bag;
+
+  void addDish(Dish dish) {
+    _bag.add(dish);
     notifyListeners();
   }
 
-  removeDish(Dish dish) {
-    dishesOnBag.remove(dish);
+  void removeDish(Dish dish) {
+    _bag.remove(dish);
     notifyListeners();
   }
 
-  clearBag() async {
-    dishesOnBag.clear();
+  double get totalPrice {
+    return _bag.fold(0, (sum, dish) => sum + dish.price);
+  }
+
+  void clearBag() {
+    _bag.clear();
     notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 100));
   }
-
-  Map<Dish, int> getMapByAmount() {
-    Map<Dish, int> mapResult = {};
-    for (Dish dish in dishesOnBag) {
-      if (mapResult[dish] == null) {
-        mapResult[dish] = 1;
-      } else {
-        mapResult[dish] = mapResult[dish]! + 1;
-      }
-    }
-    return mapResult;
-  }
-
-  @override
-  String toString() => 'BagProvider(dishesOnBag: $dishesOnBag)';
 }

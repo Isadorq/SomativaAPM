@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:somativa_apm/model/dish.dart';
 import 'package:somativa_apm/provider/bag_provider.dart';
-import 'package:somativa_apm/ui/core/app_colors.dart';
+import 'package:somativa_apm/core/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class DishCard extends StatelessWidget {
@@ -18,11 +18,10 @@ class DishCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: () {
-        // futuro: abrir detalhes do prato
       },
       child: Card(
         elevation: 6,
-        shadowColor: AppColors.primary.withOpacity(0.2),
+        shadowColor: AppColors.primary.withValues(alpha: 50),
         margin: const EdgeInsets.only(bottom: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
@@ -33,7 +32,6 @@ class DishCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               
-              // IMAGEM 🍽️
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
@@ -53,7 +51,6 @@ class DishCard extends StatelessWidget {
 
               const SizedBox(width: 14),
 
-              // TEXTO ✨
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +74,6 @@ class DishCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    // PREÇO 💸
                     Text(
                       currencyFormat.format(dish.price),
                       style: const TextStyle(
@@ -90,7 +86,6 @@ class DishCard extends StatelessWidget {
                 ),
               ),
 
-              // BOTÃO ➕
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -101,7 +96,7 @@ class DishCard extends StatelessWidget {
                       size: 34,
                     ),
                     onPressed: () {
-                      bagProvider.addItem(dish);
+                      bagProvider.addDish(dish);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
