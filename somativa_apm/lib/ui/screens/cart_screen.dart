@@ -1,56 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/bag_provider.dart';
-import '../../core/app_colors.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bagProvider = Provider.of<BagProvider>(context);
-    final bag = bagProvider.dishes;
+    final bag = Provider.of<BagProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Carrinho"),
-        backgroundColor: AppColors.primary,
-      ),
-      body: bag.isEmpty
-          ? const Center(
-              child: Text("Carrinho vazio"),
-            )
-          : ListView.builder(
-              itemCount: bag.length,
+      appBar: AppBar(title: const Text("Checkout")),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: bag.dishes.length,
               itemBuilder: (context, index) {
-                final dish = bag[index];
-
+                final dish = bag.dishes[index];
                 return ListTile(
-                  leading: CircleAvatar(backgroundImage: NetworkImage(dish.imageUrl)),
+                  leading: Image.network(dish.imageUrl, width: 50),
                   title: Text(dish.name),
-                  subtitle: Text("R\$ ${dish.price}"),
+                  subtitle: Text("R\$ ${dish.price.toStringAsFixed(2)}"),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => bagProvider.removeDish(dish),
+                    icon: const Icon(Icons.remove_circle),
+                    onPressed: () => bag.removeDish(dish),
                   ),
                 );
               },
             ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        color: AppColors.secondary,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Total: R\$ ${bagProvider.totalPrice.toStringAsFixed(2)}",
-                style: const TextStyle(fontSize: 18, color: Colors.white)),
-
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Ir para Checkout"),
-            )
-          ],
-        ),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Subtotal"),
+                    Text("R\$ ${bag.subtotal.toStringAsFixed(2)}"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Frete"),
+                    Text("R\$ ${bag.shipping.toStringAsFixed(2)}"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Total", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("R\$ ${bag.total.toStringAsFixed(2)}"),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Pedido finalizado!")),
+                    );
+                    bag.clearBag();
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Finalizar Pedido"),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

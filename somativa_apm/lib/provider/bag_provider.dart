@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import '../model/dish.dart';
 
-class BagProvider extends ChangeNotifier {
-  final List<Dish> _bag = [];
+class BagProvider with ChangeNotifier {
+  final List<Dish> _dishes = [];
 
-  List<Dish> get dishes => _bag;
+  List<Dish> get dishes => _dishes;
+
+  double get subtotal =>
+      _dishes.fold(0, (sum, dish) => sum + dish.price);
+
+  double get shipping => subtotal > 100 ? 0 : 15;
+
+  double get total => subtotal + shipping;
 
   void addDish(Dish dish) {
-    _bag.add(dish);
+    _dishes.add(dish);
     notifyListeners();
   }
 
   void removeDish(Dish dish) {
-    _bag.remove(dish);
+    _dishes.remove(dish);
     notifyListeners();
   }
 
-  double get totalPrice {
-    return _bag.fold(0, (sum, dish) => sum + dish.price);
-  }
-
   void clearBag() {
-    _bag.clear();
+    _dishes.clear();
     notifyListeners();
   }
 }

@@ -1,30 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'provider/bag_provider.dart';
-import 'routes.dart';
-import 'core/app_colors.dart';
+import './ui/screens/login_screen.dart';
+import './ui/screens/registration_screen.dart';
+import './ui/screens/menu_screen.dart';
+import './ui/screens/checkout_screen.dart';
+import './ui/screens/confirmation_screen.dart';
+import '../../provider/bag_provider.dart';
+import '../ui/screens/restaurant_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => BagProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => BagProvider()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: AppColors.primary,
-          scaffoldBackgroundColor: AppColors.backgroundDark,
-          useMaterial3: true,
-        ),
-        initialRoute: '/login',
-        routes: appRoutes,
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: "/login",
+      routes: {
+        "/login": (context) => const LoginScreen(),
+        "/register": (context) => const RegistrationScreen(),
+        "/menu": (context) => const MenuScreen(),
+        "/restaurant": (context) => const RestaurantScreen(), 
+        "/checkout": (context) => const CheckoutScreen(),
+        "/confirmation": (context) => const ConfirmationScreen(),
+      },
     );
   }
 }
